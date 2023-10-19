@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter_test/flutter_test.dart';
 
-import './facebook_sign_in_test.dart' as facebook_sign_in;
+import 'facebook_sign_in.dart' as facebook_sign_in;
 
 void main() {
   group('OAuth Facebook', () {

@@ -4,7 +4,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'apple_sign_in_test.dart' as apple_sign_in;
+import 'apple_sign_in.dart' as apple_sign_in;
 
 void main() {
   group('OAuth Apple', () {

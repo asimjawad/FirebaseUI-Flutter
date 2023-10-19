@@ -31,18 +31,11 @@ bool get isMobile {
 late FirebaseFirestore db;
 late FirebaseAuth auth;
 
-bool _prepared = false;
-
 Future<void> prepare() async {
-  if (_prepared) return;
-  _prepared = true;
-
-  if (!kIsWeb) {
-    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  }
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9098);
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   auth = FirebaseAuth.instance;
 
   FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);

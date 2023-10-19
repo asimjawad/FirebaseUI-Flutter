@@ -4,7 +4,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import './google_sign_in_test.dart' as google_sign_in;
+import 'google_sign_in.dart' as google_sign_in;
 
 void main() {
   group('OAuth Google', () {

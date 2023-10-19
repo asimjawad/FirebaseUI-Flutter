@@ -22,6 +22,8 @@ on:
       - "**.png"
       - "**.jpg"
 
+  workflow_dispatch:
+
 jobs:
   android:
     runs-on: macos-13
@@ -69,14 +71,9 @@ jobs:
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
-      - name: Start Firebase Emulator and proxy
-        run: |
-          cd ./tests
-          echo "Starting Firebase Emulator"
-          ../.github/workflows/scripts/start-firebase-emulator.sh
-          cd ../emulator_proxy
-          echo "Starting emulator proxy"
-          dart run emulator_proxy:start 100 &
+      - name: Start Firebase Emulator
+        working-directory: tests
+        run: ../.github/workflows/scripts/start-firebase-emulator.sh
       - name: Create and start emulator
         # We use the installed SDK in the macOS image to create and start the emulator
         run: |
@@ -94,8 +91,7 @@ jobs:
           adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
       - name: "E2E Tests"
         working-directory: tests
-        run: |
-          flutter test integration_test/firebase_ui_test.dart --dart-define=CI=true
+        run: flutter test integration_test --dart-define=CI=true
 
   ios:
     # Dropped down to macos-12 as macos-13 was timing out. This suspected issue:https://github.com/actions/runner-images/issues/8023
@@ -142,25 +138,9 @@ jobs:
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
-      - name: "Build Application"
+      - name: Start Firebase Emulator
         working-directory: tests
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          export CCACHE_SLOPPINESS=clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros
-          export CCACHE_FILECLONE=true
-          export CCACHE_DEPEND=true
-          export CCACHE_INODECACHE=true
-          ccache -s
-          flutter build ios --no-codesign --simulator --debug --target=./integration_test/firebase_ui_test.dart --dart-define=CI=true
-          ccache -s
-      - name: Start Firebase Emulator and proxy
-        run: |
-          cd ./tests
-          echo "Starting Firebase Emulator"
-          ../.github/workflows/scripts/start-firebase-emulator.sh
-          cd ../emulator_proxy
-          echo "Starting emulator proxy"
-          dart run emulator_proxy:start 100 &
+        run: ../.github/workflows/scripts/start-firebase-emulator.sh
       - name: "E2E Tests"
         working-directory: tests
         run: |
@@ -173,7 +153,7 @@ jobs:
           sleep 15
           # Uncomment following line to have simulator logs printed out for debugging purposes.
           # xcrun simctl spawn booted log stream --predicate 'eventMessage contains "flutter"' &
-          flutter test ./integration_test/firebase_ui_test.dart -d "$SIMULATOR" --dart-define=CI=true
+          flutter test integration_test -d "$SIMULATOR" --dart-define=CI=true
 
   macos:
     runs-on: macos-13
@@ -219,25 +199,9 @@ jobs:
       - name: "Install Tools"
         run: |
           sudo npm i -g firebase-tools
-      - name: "Build Application"
+      - name: Start Firebase Emulator
         working-directory: tests
-        run: |
-          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
-          export CCACHE_SLOPPINESS=clang_index_store,file_stat_matches,include_file_ctime,include_file_mtime,ivfsoverlay,pch_defines,modules,system_headers,time_macros
-          export CCACHE_FILECLONE=true
-          export CCACHE_DEPEND=true
-          export CCACHE_INODECACHE=true
-          ccache -s
-          flutter build macos --debug --target=./integration_test/firebase_ui_test.dart --device-id=macos --dart-define=CI=true
-          ccache -s
-      - name: Start Firebase Emulator and proxy
-        run: |
-          cd ./tests
-          echo "Starting Firebase Emulator"
-          ../.github/workflows/scripts/start-firebase-emulator.sh
-          cd ../emulator_proxy
-          echo "Starting emulator proxy"
-          dart run emulator_proxy:start 100 &
+        run: ../.github/workflows/scripts/start-firebase-emulator.sh
       - name: "E2E Tests"
         working-directory: tests
-        run: flutter test ./integration_test/firebase_ui_test.dart -d macos --dart-define=CI=true
+        run: flutter test integration_test -d macos --dart-define=CI=true

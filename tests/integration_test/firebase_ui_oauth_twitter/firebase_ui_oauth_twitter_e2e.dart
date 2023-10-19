@@ -4,7 +4,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import './twitter_sign_in_test.dart' as twitter_sign_in;
+import 'twitter_sign_in.dart' as twitter_sign_in;
 
 void main() {
   group('OAuth Twitter', () {

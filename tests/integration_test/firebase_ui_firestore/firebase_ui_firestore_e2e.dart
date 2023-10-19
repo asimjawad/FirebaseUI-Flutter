@@ -4,7 +4,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'firestore_list_view_test.dart' as firestore_list_view_test;
+import 'firestore_list_view.dart' as firestore_list_view_test;
 // import 'firestore_query_builder_test.dart' as firestore_query_builder_test;
 
 Future<void> main() async {
